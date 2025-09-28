@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=vk_project
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dbnet
+
+  scripts:
+    build: ./
+    image: scripts
+    links:
+      - "postgres:dbps"
+    networks:
+      - dbnet
+    depends_on:
+      - postgres
+    ports:
+      - "127.0.0.1:8000:4000"
+
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
+# docker run --name ck_postges_container -p 5432:5432 -d ck_postgres
